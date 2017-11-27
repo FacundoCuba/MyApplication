@@ -5,6 +5,7 @@ import java.io.Serializable;
 //Created by facu on 26/11/17.
 
 public class Coordenadas implements Serializable{
+
     //x = Latitude | y = Longitud
     float x = 0;
     float y = 0;

@@ -10,7 +10,6 @@ package com.example.facu.myapplication;
         import android.util.AttributeSet;
         import android.view.View;
 
-
 public class CanvasView extends View {
 
     private Bitmap mBitmap;

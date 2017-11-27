@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         try {
             coor.setLat((float) location.getLatitude());
             coor.setLong((float) location.getLongitude());
-
         }
         catch (NullPointerException e){
             System.out.print("NullPointerException caught");
