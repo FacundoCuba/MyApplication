@@ -11,11 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ImageView;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
 
@@ -24,7 +20,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private final int REQUEST_COARSE_LOCATION = 2345;
     private final int REQUEST_LOCATION_HARDWARE = 3456;
 
-    ImageView ourView;
+    private CanvasView customCanvas;
+    Coordenadas coor = new Coordenadas();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -36,46 +34,24 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         else if (ContextCompat.checkSelfPermission(this, Manifest.permission.LOCATION_HARDWARE) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.LOCATION_HARDWARE}, REQUEST_LOCATION_HARDWARE);
 
-        draw(0,0);
-        setContentView(ourView);
-    }
-
-    public void draw(float x, float y){
-        // Declare an object of type Bitmap
-        Bitmap blankBitmap;
-        // Make it 600 x 600 pixels in size and an appropriate format
-        blankBitmap = Bitmap.createBitmap(600,600,Bitmap.Config.ARGB_8888);
-        // Declare an object of type canvas
-        Canvas canvas;
-        // Initialize it by making its surface our previously created blank bitmap
-        canvas = new Canvas(blankBitmap);
-        // Initialize our previously declared member object of type ImageView
-        ourView = new ImageView(this);
-        // Put our blank bitmap on ourView
-        ourView.setImageBitmap(blankBitmap);
-        // We now have a surface ready to draw on
-        // But we need something to draw with
-        // Declare an object of type Paint
-        Paint paint;
-        // Initialize it ready for painting our canvas
-        paint = new Paint();
-        // Make the canvas white
-        canvas.drawColor(Color.argb(255, 255, 255, 255));
-        // Make the brush blue
-        paint.setColor(Color.argb(255,  26, 128, 182));
-        // Draw a pixel
-        canvas.drawPoint(x, y,paint);
-        // Draw a line
-        canvas.drawLine(0, 0, x, y,paint);
-        // Change the brush color
-        //paint.setColor(Color.argb(255,  249, 129, 0));
+        customCanvas = findViewById(R.id.canvas);
     }
 
     @Override
     public void onLocationChanged(Location location) {
+        TextView loc = findViewById(R.id.txtLoc);
         float x = (float) location.getLatitude();
         float y = (float) location.getLongitude();
-        draw(x,y);
+        String s = String.valueOf(x)+" "+String.valueOf(y);
+        loc.setText(s);
+        try {
+            coor.setLat((float) location.getLatitude());
+            coor.setLong((float) location.getLongitude());
+
+        }
+        catch (NullPointerException e){
+            System.out.print("NullPointerException caught");
+        }
     }
 
     @Override
