@@ -8,12 +8,13 @@ package com.example.facu.myapplication;
         import android.graphics.Color;
         import android.graphics.Paint;
         import android.util.AttributeSet;
+        import android.util.Log;
         import android.view.View;
 
 public class CanvasView extends View {
 
-    private Bitmap mBitmap;
-    private Canvas mCanvas;
+    private Bitmap bitmap;
+    private Canvas canvas;
     Context context;
     private Paint paint;
 
@@ -33,20 +34,16 @@ public class CanvasView extends View {
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
-        mBitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        mCanvas = new Canvas(mBitmap);
+        bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+        canvas = new Canvas(bitmap);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        try {
-            canvas.drawLine(coor.getOldLat(), coor.getOldLong(), coor.getLat(), coor.getLong(), paint);
-        }
-        catch (NullPointerException e) {
-            System.out.print("NullPointerException caught");
-        }
-
+    }
+    public void dibujar(Coordenadas coordenadas){
+        canvas.drawLine(coordenadas.getOldLat(), coordenadas.getOldLong(), coordenadas.getLat(), coordenadas.getLong(), paint);
     }
 }
 

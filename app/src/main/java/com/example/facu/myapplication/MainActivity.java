@@ -11,6 +11,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
@@ -21,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private final int REQUEST_LOCATION_HARDWARE = 3456;
 
     private CanvasView customCanvas;
-    Coordenadas coor = new Coordenadas();
+    public Coordenadas coor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,22 +37,31 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.LOCATION_HARDWARE}, REQUEST_LOCATION_HARDWARE);
 
         customCanvas = findViewById(R.id.canvas);
+        coor = new Coordenadas();
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        TextView loc = findViewById(R.id.txtLoc);
         float x = (float) location.getLatitude();
         float y = (float) location.getLongitude();
         String s = String.valueOf(x)+" "+String.valueOf(y);
-        loc.setText(s);
         try {
             coor.setLat((float) location.getLatitude());
             coor.setLong((float) location.getLongitude());
+            customCanvas.dibujar(coor);
         }
         catch (NullPointerException e){
-            System.out.print("NullPointerException caught");
+            Log.d("Null error", "NullPointerException caught");
         }
+    }
+    public void dibujo(View view){
+        EditText latitud = findViewById(R.id.txtLat);
+        EditText longitud = findViewById(R.id.txtLong);
+        float lat = Float.parseFloat(latitud.getText().toString());
+        float lon = Float.parseFloat(longitud.getText().toString());
+        coor.setLat(lat);
+        coor.setLong(lon);
+        customCanvas.dibujar(coor);
     }
 
     @Override
@@ -103,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
                 break;
         }
     }
+
     @Override
     protected void onResume(){
         super .onResume();
