@@ -6,10 +6,10 @@ import java.io.Serializable;
 
 public class Coordenadas implements Serializable{
     //x = Latitude | y = Longitud
-    private float x = 0;
-    private float y = 0;
-    private float oldx = 0;
-    private float oldy = 0;
+    private float x = 100;
+    private float y = 100;
+    private float oldx = 50;
+    private float oldy = 50;
 
     public void setLat(float latitud){
         oldx = x;
