@@ -5,30 +5,32 @@ import java.io.Serializable;
 //Created by facu on 26/11/17.
 
 public class Coordenadas implements Serializable{
-    //x = Latitude | y = Longitud
-    private float x = 100;
-    private float y = 100;
+    //x = Longitud (de -180 a 180) | y = Latitud (de -90 a 90)
     private float oldx = 50;
     private float oldy = 50;
+    private float x = 90;
+    private float y = 90;
+
+    public void setLong(float longitud) {
+        oldx = x;
+        x = longitud;
+    }
 
     public void setLat(float latitud){
-        oldx = x;
-        x = latitud;
-    }
-    public void setLong(float longitud){
         oldy = y;
-        y = longitud;
-    }
-    public float getLat(){
-        return x;
-    }
-    public float getOldLat(){
-        return oldx;
-    }
-    public float getLong(){
-        return y;
+        y = latitud;
     }
     public float getOldLong(){
+        return oldx;
+    }
+    public float getOldLat(){
         return oldy;
     }
+    public float getLong(){
+        return x;
+    }
+    public float getLat(){
+        return y;
+    }
+
 }

@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private final int REQUEST_COARSE_LOCATION = 2345;
     private final int REQUEST_LOCATION_HARDWARE = 3456;
 
-    CanvasView customCanvas;
+    public CanvasView myCanvasView;
     public Coordenadas coor;
 
     @Override
@@ -36,12 +36,12 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         else if (ContextCompat.checkSelfPermission(this, Manifest.permission.LOCATION_HARDWARE) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.LOCATION_HARDWARE}, REQUEST_LOCATION_HARDWARE);
 
-        customCanvas = new CanvasView(this);
-        setContentView(customCanvas);
+        myCanvasView = new CanvasView(this);
+        setContentView(myCanvasView);
         coor = new Coordenadas();
     }
 
-    private class CanvasView extends View {
+    public class CanvasView extends View {
         public CanvasView(Context context) {
             super(context);
         }
@@ -51,27 +51,27 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
             super.onDraw(canvas);
             Paint paint = new Paint();
             paint.setAntiAlias(true);
-            paint.setColor(Color.BLACK);
+            paint.setColor(Color.BLUE);
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeJoin(Paint.Join.ROUND);
-            paint.setStrokeWidth(5f);
+            paint.setStrokeWidth(4f);
 
-            float oldLat = coor.getOldLat();
             float oldLong = coor.getOldLong();
-            float lat = coor.getLat();
+            float oldLat = coor.getOldLat();
             float lon = coor.getLong();
-            canvas.drawLine(oldLat, oldLong, lat, lon, paint);
+            float lat = coor.getLat();
+            canvas.drawLine(oldLong, oldLat, lon, lat, paint);
         }
     }
 
     @Override
     public void onLocationChanged(Location location) {
         try {
-            coor.setLat((float) location.getLatitude());
             coor.setLong((float) location.getLongitude());
-            customCanvas.invalidate();
-        }
-        catch (NullPointerException e){
+            coor.setLat((float) location.getLatitude());
+            myCanvasView.invalidate();
+
+        } catch (NullPointerException e){
             Log.d("Null error", "NullPointerException caught");
         }
     }
