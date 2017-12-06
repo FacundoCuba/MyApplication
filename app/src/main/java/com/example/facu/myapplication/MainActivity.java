@@ -3,9 +3,7 @@ package com.example.facu.myapplication;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
+import android.graphics.PointF;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -14,7 +12,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
+import java.util.ArrayList;
+import java.util.List;
+
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
 
@@ -23,8 +23,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private final int REQUEST_COARSE_LOCATION = 2345;
     private final int REQUEST_LOCATION_HARDWARE = 3456;
 
-    public CanvasView myCanvasView;
     public Coordenadas coor;
+    public List<PointF> listaCoordenadas;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,32 +36,9 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         else if (ContextCompat.checkSelfPermission(this, Manifest.permission.LOCATION_HARDWARE) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.LOCATION_HARDWARE}, REQUEST_LOCATION_HARDWARE);
 
-        myCanvasView = new CanvasView(this);
-        setContentView(myCanvasView);
+        setContentView(new CanvasView(this));
         coor = new Coordenadas();
-    }
-
-    public class CanvasView extends View {
-        public CanvasView(Context context) {
-            super(context);
-        }
-
-        @Override
-        protected void onDraw(Canvas canvas) {
-            super.onDraw(canvas);
-            Paint paint = new Paint();
-            paint.setAntiAlias(true);
-            paint.setColor(Color.BLUE);
-            paint.setStyle(Paint.Style.STROKE);
-            paint.setStrokeJoin(Paint.Join.ROUND);
-            paint.setStrokeWidth(4f);
-
-            float oldLong = coor.getOldLong();
-            float oldLat = coor.getOldLat();
-            float lon = coor.getLong();
-            float lat = coor.getLat();
-            canvas.drawLine(oldLong, oldLat, lon, lat, paint);
-        }
+        listaCoordenadas = new ArrayList<>();
     }
 
     @Override
@@ -69,11 +46,16 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         try {
             coor.setLong((float) location.getLongitude());
             coor.setLat((float) location.getLatitude());
-            myCanvasView.invalidate();
-
+            PointF oldxy = new PointF(coor.getOldLong(),coor.getOldLat());
+            PointF newxy = new PointF(coor.getLong(),coor.getLat());
+            listaCoordenadas.add(oldxy);
+            listaCoordenadas.add(newxy);
         } catch (NullPointerException e){
             Log.d("Null error", "NullPointerException caught");
         }
+    }
+    public List<PointF> getListaCoordenadas(){
+        return listaCoordenadas;
     }
 
     @Override

@@ -6,8 +6,8 @@ import java.io.Serializable;
 
 public class Coordenadas implements Serializable{
     //x = Longitud (de -180 a 180) | y = Latitud (de -90 a 90)
-    private float oldx = 50;
-    private float oldy = 50;
+    private float oldx = 0;
+    private float oldy = 0;
     private float x = 90;
     private float y = 90;
 
@@ -32,5 +32,4 @@ public class Coordenadas implements Serializable{
     public float getLat(){
         return y;
     }
-
 }
