@@ -3,7 +3,10 @@ package com.example.facu.myapplication;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.graphics.PointF;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -12,9 +15,9 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
-
 
 public class MainActivity extends AppCompatActivity implements LocationListener {
 
@@ -24,7 +27,8 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
     private final int REQUEST_LOCATION_HARDWARE = 3456;
 
     public Coordenadas coor;
-    public List<PointF> listaCoordenadas;
+    public Path punto;
+    public List<Path> listaPaths;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,27 +40,45 @@ public class MainActivity extends AppCompatActivity implements LocationListener 
         else if (ContextCompat.checkSelfPermission(this, Manifest.permission.LOCATION_HARDWARE) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.LOCATION_HARDWARE}, REQUEST_LOCATION_HARDWARE);
 
-        setContentView(new CanvasView(this));
         coor = new Coordenadas();
-        listaCoordenadas = new ArrayList<>();
+        listaPaths = new ArrayList<>();
     }
 
     @Override
     public void onLocationChanged(Location location) {
+        final Paint paint = new Paint();
         try {
             coor.setLong((float) location.getLongitude());
             coor.setLat((float) location.getLatitude());
-            PointF oldxy = new PointF(coor.getOldLong(),coor.getOldLat());
-            PointF newxy = new PointF(coor.getLong(),coor.getLat());
-            listaCoordenadas.add(oldxy);
-            listaCoordenadas.add(newxy);
+            punto = new Path();
+            punto.moveTo(coor.getOldLong(),coor.getOldLat());
+            punto.lineTo(coor.getLong(),coor.getLat());
+            listaPaths.add(punto);
+
+            class CanvasView extends View {
+                public CanvasView(Context context) {
+                    super(context);
+                }
+                @Override
+                protected void onDraw(Canvas canvas) {
+                    super.onDraw(canvas);
+                    paint.setAntiAlias(true);
+                    paint.setColor(Color.BLACK);
+                    paint.setStyle(Paint.Style.STROKE);
+                    paint.setStrokeJoin(Paint.Join.ROUND);
+                    paint.setStrokeWidth(5f);
+                    for (Path path : listaPaths){
+                        canvas.drawPath(path, paint);
+                    }
+                }
+            }
         } catch (NullPointerException e){
             Log.d("Null error", "NullPointerException caught");
         }
     }
-    public List<PointF> getListaCoordenadas(){
-        return listaCoordenadas;
-    }
+
+    //https://google-developer-training.gitbooks.io/android-developer-advanced-course-practicals/content/unit-5-advanced-graphics-and-views/lesson-11-canvas/11-1a-p-create-a-simple-canvas/11-1a-p-create-a-simple-canvas.html
+    // http://www.tutorialforandroid.com/2010/11/drawing-with-canvas-in-android-renewed.html
 
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
